@@ -6333,12 +6333,6 @@
                     "display_name": {
                         "type": "string"
                     },
-                    "groups": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/controllers.SystemGroup"
-                        }
-                    },
                     "id": {
                         "type": "string"
                     },
@@ -6376,6 +6370,12 @@
                         "type": "string"
                     },
                     "template_uuid": {
+                        "type": "string"
+                    },
+                    "workspace_id": {
+                        "type": "string"
+                    },
+                    "workspace_name": {
                         "type": "string"
                     }
                 }
@@ -6415,12 +6415,6 @@
                     "display_name": {
                         "type": "string"
                     },
-                    "groups": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/controllers.SystemGroup"
-                        }
-                    },
                     "last_upload": {
                         "type": "string"
                     },
@@ -6455,6 +6449,12 @@
                         "type": "string"
                     },
                     "template_uuid": {
+                        "type": "string"
+                    },
+                    "workspace_id": {
+                        "type": "string"
+                    },
+                    "workspace_name": {
                         "type": "string"
                     }
                 }
@@ -6725,12 +6725,6 @@
                     "display_name": {
                         "type": "string"
                     },
-                    "groups": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/controllers.SystemGroup"
-                        }
-                    },
                     "id": {
                         "type": "string"
                     },
@@ -6762,6 +6756,12 @@
                         "type": "boolean"
                     },
                     "update_status": {
+                        "type": "string"
+                    },
+                    "workspace_id": {
+                        "type": "string"
+                    },
+                    "workspace_name": {
                         "type": "string"
                     }
                 }
@@ -6974,12 +6974,6 @@
                     "display_name": {
                         "type": "string"
                     },
-                    "groups": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/controllers.SystemGroup"
-                        }
-                    },
                     "id": {
                         "type": "string"
                     },
@@ -7051,6 +7045,12 @@
                     },
                     "template_uuid": {
                         "type": "string"
+                    },
+                    "workspace_id": {
+                        "type": "string"
+                    },
+                    "workspace_name": {
+                        "type": "string"
                     }
                 }
             },
@@ -7059,17 +7059,6 @@
                 "properties": {
                     "data": {
                         "$ref": "#/components/schemas/controllers.SystemItemExtended"
-                    }
-                }
-            },
-            "controllers.SystemGroup": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
                     }
                 }
             },
@@ -7123,12 +7112,6 @@
                     "display_name": {
                         "type": "string"
                     },
-                    "groups": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/controllers.SystemGroup"
-                        }
-                    },
                     "installable_other_count": {
                         "type": "integer"
                     },
@@ -7197,6 +7180,12 @@
                     },
                     "template_uuid": {
                         "type": "string"
+                    },
+                    "workspace_id": {
+                        "type": "string"
+                    },
+                    "workspace_name": {
+                        "type": "string"
                     }
                 }
             },
@@ -7238,12 +7227,6 @@
                     },
                     "display_name": {
                         "type": "string"
-                    },
-                    "groups": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/controllers.SystemGroup"
-                        }
                     },
                     "installable_other_count": {
                         "type": "integer"
@@ -7328,6 +7311,12 @@
                     },
                     "third_party": {
                         "type": "boolean"
+                    },
+                    "workspace_id": {
+                        "type": "string"
+                    },
+                    "workspace_name": {
+                        "type": "string"
                     }
                 }
             },
@@ -7601,12 +7590,6 @@
                     "display_name": {
                         "type": "string"
                     },
-                    "groups": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/controllers.SystemGroup"
-                        }
-                    },
                     "installable_other_count": {
                         "type": "integer"
                     },
@@ -7633,6 +7616,12 @@
                         "items": {
                             "$ref": "#/components/schemas/controllers.SystemTag"
                         }
+                    },
+                    "workspace_id": {
+                        "type": "string"
+                    },
+                    "workspace_name": {
+                        "type": "string"
                     }
                 }
             },
@@ -7670,12 +7659,6 @@
                     "display_name": {
                         "type": "string"
                     },
-                    "groups": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/controllers.SystemGroup"
-                        }
-                    },
                     "id": {
                         "type": "string"
                     },
@@ -7705,6 +7688,12 @@
                         "items": {
                             "$ref": "#/components/schemas/controllers.SystemTag"
                         }
+                    },
+                    "workspace_id": {
+                        "type": "string"
+                    },
+                    "workspace_name": {
+                        "type": "string"
                     }
                 }
             },
