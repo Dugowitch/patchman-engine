@@ -28,6 +28,11 @@ type SystemGroups struct {
 	Groups SystemGroupsList `json:"groups" csv:"groups" query:"si.workspaces" gorm:"column:groups" order_query:"si.workspaces->0->>'name'"`
 }
 
+type SystemWorkspace struct {
+	WorkspaceID   *string `json:"workspace_id" csv:"workspace_id" query:"si.workspace_id" gorm:"column:workspace_id"`
+	WorkspaceName *string `json:"workspace_name" csv:"workspace_name" query:"si.workspace_name" gorm:"column:workspace_name"`
+}
+
 // baseline attributes are obsoleted and we keep them only for backward API compatibility
 // now they always return default value
 type BaselineAttributes struct {
