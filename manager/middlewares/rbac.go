@@ -122,15 +122,31 @@ func isAccessGranted(c *gin.Context) bool {
 	handlerName := nameSplitted[len(nameSplitted)-1]
 
 	granted := checkPermissions(&access, handlerName, c.Request.Method)
-	if granted {
-		// collect inventory groups
-		groups, err := findInventoryGroups(&access)
-		if err != nil {
-			utils.LogError("err", err.Error(), "RBAC")
-			granted = false
-		}
-		c.Set(utils.KeyInventoryGroups, groups)
+	if !granted {
+		return granted
 	}
+	// collect inventory groups
+	groups, err := findInventoryGroups(&access)
+	if err != nil {
+		utils.LogError("err", err.Error(), "RBAC")
+		granted = false
+	}
+	c.Set(utils.KeyInventoryGroups, groups)
+
+	workspaceIDs := make([]string, 0)
+	for _, a := range access.Data {
+		for _, rd := range a.ResourceDefinitions {
+			for _, v := range rd.AttributeFilter.Value {
+				if v == nil {
+					// TODO: use root ws
+				} else {
+					workspaceIDs = append(workspaceIDs, *v)
+				}
+			}
+		}
+	}
+	c.Set(utils.KeyInventoryWorkspaces, workspaceIDs)
+
 	return granted
 }
 
