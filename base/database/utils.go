@@ -34,6 +34,14 @@ func Systems(tx *gorm.DB, accountID int, groups map[string]string, joins ...join
 	return ApplyInventoryWorkspaceFilter(tx, groups)
 }
 
+func Systems2(tx *gorm.DB, accountID int, workspaceIDs []string, joins ...join) *gorm.DB {
+	tx = tx.Table("system_inventory si").
+		Joins("JOIN system_patch spatch ON si.id = spatch.system_id AND si.rh_account_id = spatch.rh_account_id").
+		Where("si.rh_account_id = ?", accountID)
+	tx = (joinsT)(joins).apply(tx)
+	return ApplyInventoryWorkspaceFilter2(tx, workspaceIDs)
+}
+
 func SystemAdvisories(tx *gorm.DB, accountID int, groups map[string]string, joins ...join) *gorm.DB {
 	tx = Systems(tx, accountID, groups).
 		Joins("JOIN system_advisories sa on sa.system_id = si.id AND sa.rh_account_id = ?", accountID)

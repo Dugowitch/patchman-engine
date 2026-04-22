@@ -32,6 +32,17 @@ func TestGroupNameFilter(t *testing.T) {
 	assert.Equal(t, 2, len(systems)) // 2 systems with `group2` in test_data
 	assert.Equal(t, "00000000-0000-0000-0000-000000000007", systems[0].ID)
 	assert.Equal(t, "00000000-0000-0000-0000-000000000008", systems[1].ID)
+
+	// ensure the workspaces work the same as groups
+	var systems2 []SystemsID
+	workspaceIDs := []string{"inventory-group-1", "inventory-group-2"}
+	ty := database.Systems2(database.DB, 1, workspaceIDs)
+	ty, _ = ApplyInventoryFilter(filters, ty, "si.inventory_id")
+	ty.Scan(&systems2)
+
+	assert.Equal(t, 2, len(systems2))
+	assert.Equal(t, "00000000-0000-0000-0000-000000000007", systems2[0].ID)
+	assert.Equal(t, "00000000-0000-0000-0000-000000000008", systems2[1].ID)
 }
 
 func TestGroupNameFilter2(t *testing.T) {
@@ -53,4 +64,13 @@ func TestGroupNameFilter2(t *testing.T) {
 	tx.Scan(&systems)
 
 	assert.Equal(t, 9, len(systems)) // 2 systems with `group2`, 6 with `group1` in test_data
+
+	// ensure the workspaces work the same as groups
+	var systems2 []SystemsID
+	workspaceIDs := []string{"inventory-group-1", "inventory-group-2"}
+	ty := database.Systems2(database.DB, 1, workspaceIDs)
+	ty, _ = ApplyInventoryFilter(filters, ty, "si.inventory_id")
+	ty.Scan(&systems2)
+
+	assert.Equal(t, 9, len(systems2))
 }
