@@ -13,7 +13,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func doTestView(t *testing.T, handler gin.HandlerFunc, q string, limit, offset *int) *httptest.ResponseRecorder {
+var c = core.ContextKV{
+	Key:   utils.KeyInventoryWorkspaces,
+	Value: []string{"root-workspace", "inventory-group-1", "inventory-group-2"},
+}
+
+func doTestView(t *testing.T, handler gin.HandlerFunc, q string, limit, offset *int, contextKVs ...core.ContextKV,
+) *httptest.ResponseRecorder {
 	core.SetupTest(t)
 	body := SystemsAdvisoriesRequest{
 		Systems:    []SystemID{"00000000-0000-0000-0000-000000000001", "00000000-0000-0000-0000-000000000002"},
@@ -26,12 +32,12 @@ func doTestView(t *testing.T, handler gin.HandlerFunc, q string, limit, offset *
 		panic(err)
 	}
 
-	w := CreateRequestRouterWithParams("POST", "/", "", q, bytes.NewBuffer(bodyJSON), "", handler, 1)
+	w := CreateRequestRouterWithParams("POST", "/", "", q, bytes.NewBuffer(bodyJSON), "", handler, 1, contextKVs...)
 	return w
 }
 
 func TestSystemsAdvisoriesView(t *testing.T) {
-	w := doTestView(t, PostSystemsAdvisories, "", nil, nil)
+	w := doTestView(t, PostSystemsAdvisories, "", nil, nil, c)
 	var output SystemsAdvisoriesResponse
 	CheckResponse(t, w, http.StatusOK, &output)
 	assert.Equal(t, output.Data["00000000-0000-0000-0000-000000000001"][0], AdvisoryName("RH-1"))
@@ -48,7 +54,7 @@ func TestAdvisoriesSystemsView(t *testing.T) {
 }
 
 func TestSystemsAdvisoriesViewTags(t *testing.T) {
-	w := doTestView(t, PostSystemsAdvisories, "?filter[system_profile][sap_sids]=DEF", nil, nil)
+	w := doTestView(t, PostSystemsAdvisories, "?filter[system_profile][sap_sids]=DEF", nil, nil, c)
 	var output SystemsAdvisoriesResponse
 	CheckResponse(t, w, http.StatusOK, &output)
 	assert.Equal(t, output.Data["00000000-0000-0000-0000-000000000001"][0], AdvisoryName("RH-1"))
@@ -65,7 +71,7 @@ func TestAdvisoriesSystemsViewTags(t *testing.T) {
 func TestSystemAdvisoriesViewOffsetLimit(t *testing.T) {
 	limit := 3
 	offset := 0
-	w := doTestView(t, PostSystemsAdvisories, "", &limit, &offset)
+	w := doTestView(t, PostSystemsAdvisories, "", &limit, &offset, c)
 	var output SystemsAdvisoriesResponse
 	CheckResponse(t, w, http.StatusOK, &output)
 	assert.Equal(t, 2, len(output.Data))
@@ -78,7 +84,7 @@ func TestSystemAdvisoriesViewOffsetLimit(t *testing.T) {
 func TestSystemAdvisoriesViewOffsetOverflow(t *testing.T) {
 	limit := 1
 	offset := 100
-	w := doTestView(t, PostSystemsAdvisories, "", &limit, &offset)
+	w := doTestView(t, PostSystemsAdvisories, "", &limit, &offset, c)
 	var errResp utils.ErrorResponse
 	CheckResponse(t, w, http.StatusBadRequest, &errResp)
 	assert.Equal(t, InvalidOffsetMsg, errResp.Error)

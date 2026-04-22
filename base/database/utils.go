@@ -240,6 +240,13 @@ func ReadReplicaConfigured() bool {
 	return len(utils.CoreCfg.DBReadReplicaHost) > 0 && utils.CoreCfg.DBReadReplicaPort != 0
 }
 
+func ApplyInventoryWorkspaceFilter2(tx *gorm.DB, workspaceIDs []string) *gorm.DB {
+	if len(workspaceIDs) == 0 {
+		utils.LogWarn("there should always be some workspaces, at least root workspace")
+	}
+	return tx.Where("si.workspace_id IN (?)", workspaceIDs)
+}
+
 func ApplyInventoryWorkspaceFilter(tx *gorm.DB, groups map[string]string) *gorm.DB {
 	if _, ok := groups[utils.KeyGrouped]; !ok {
 		if _, ok := groups[utils.KeyUngrouped]; ok {
