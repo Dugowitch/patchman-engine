@@ -62,6 +62,14 @@ func SystemPackages(tx *gorm.DB, accountID int, groups map[string]string, joins 
 	return (joinsT)(joins).apply(tx)
 }
 
+func SystemPackages2(tx *gorm.DB, accountID int, workspaceIDs []string, joins ...join) *gorm.DB {
+	tx = Systems2(tx, accountID, workspaceIDs).
+		Joins("JOIN system_package2 spkg on spkg.system_id = si.id AND spkg.rh_account_id = ?", accountID).
+		Joins("JOIN package p on p.id = spkg.package_id").
+		Joins("JOIN package_name pn on pn.id = spkg.name_id")
+	return (joinsT)(joins).apply(tx)
+}
+
 func Packages(tx *gorm.DB, joins ...join) *gorm.DB {
 	tx = tx.Table("package p").
 		Joins("JOIN package_name pn on p.name_id = pn.id")

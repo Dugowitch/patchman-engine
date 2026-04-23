@@ -29,7 +29,7 @@ func TestPackageIDsSystems(t *testing.T) {
 }
 
 func TestPackageSystemsWrongOffset(t *testing.T) {
-	doTestWrongOffset(t, "/:package_name/systems", "kernel", "?offset=1000", PackageSystemsListHandler)
+	doTestWrongOffset(t, "/:package_name/systems", "kernel", "?offset=1000", PackageSystemsListHandler, c)
 }
 
 func TestPackageSystemsTagsInvalid(t *testing.T) {
@@ -47,7 +47,7 @@ func TestPackageSystemsInvalidName(t *testing.T) {
 func testPackageSystems(t *testing.T, param, queryString string, account int) PackageSystemsResponse {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithParams("GET", "/:package_name/systems", param, queryString, nil, "",
-		PackageSystemsListHandler, account)
+		PackageSystemsListHandler, account, c)
 
 	var output PackageSystemsResponse
 	CheckResponse(t, w, http.StatusOK, &output)
@@ -57,7 +57,7 @@ func testPackageSystems(t *testing.T, param, queryString string, account int) Pa
 func testPackageIDsSystems(t *testing.T, param, queryString string, account int) IDsStatusResponse {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithParams("GET", "/:package_name/systems", param, queryString, nil, "",
-		PackageSystemsListIDsHandler, account)
+		PackageSystemsListIDsHandler, account, c)
 
 	var output IDsStatusResponse
 	CheckResponse(t, w, http.StatusOK, &output)
@@ -67,7 +67,7 @@ func testPackageIDsSystems(t *testing.T, param, queryString string, account int)
 func testPackageSystemsError(t *testing.T, param, queryString string, account int) (int, utils.ErrorResponse) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithParams("GET", "/:package_name/systems", param, queryString, nil, "",
-		PackageSystemsListHandler, account)
+		PackageSystemsListHandler, account, c)
 
 	var errResp utils.ErrorResponse
 	ParseResponseBody(t, w.Body.Bytes(), &errResp)
@@ -77,7 +77,7 @@ func testPackageSystemsError(t *testing.T, param, queryString string, account in
 func TestPackageSystemsTagsInMetadata(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithParams("GET", "/:package_name/systems", "kernel", "?tags=ns1/k3=val4&tags=ns1/k1=val1",
-		nil, "", PackageSystemsListHandler, 3)
+		nil, "", PackageSystemsListHandler, 3, c)
 
 	var output PackageSystemsResponse
 	ParseResponseBody(t, w.Body.Bytes(), &output)
