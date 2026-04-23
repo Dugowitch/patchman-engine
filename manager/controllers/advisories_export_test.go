@@ -13,7 +13,7 @@ import (
 
 func TestAdvisoriesExportJSON(t *testing.T) {
 	core.SetupTest(t)
-	w := CreateRequest("GET", "/", nil, "application/json", AdvisoriesExportHandler)
+	w := CreateRequest("GET", "/", nil, "application/json", AdvisoriesExportHandler, c)
 
 	var output []AdvisoriesDBLookup
 	CheckResponse(t, w, http.StatusOK, &output)
@@ -32,7 +32,7 @@ func TestAdvisoriesExportJSON(t *testing.T) {
 
 func TestAdvisoriesExportCSV(t *testing.T) {
 	core.SetupTest(t)
-	w := CreateRequest("GET", "/", nil, "text/csv", AdvisoriesExportHandler)
+	w := CreateRequest("GET", "/", nil, "text/csv", AdvisoriesExportHandler, c)
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	body := w.Body.String()
@@ -44,7 +44,7 @@ func TestAdvisoriesExportCSV(t *testing.T) {
 
 func TestAdvisoriesExportWrongFormat(t *testing.T) {
 	core.SetupTest(t)
-	w := CreateRequest("GET", "/", nil, "test-format", AdvisoriesExportHandler)
+	w := CreateRequest("GET", "/", nil, "test-format", AdvisoriesExportHandler, c)
 
 	assert.Equal(t, http.StatusUnsupportedMediaType, w.Code)
 	body := w.Body.String()
@@ -55,7 +55,7 @@ func TestAdvisoriesExportCSVFilter(t *testing.T) {
 	core.SetupTest(t)
 
 	for _, URL := range []string{"/?filter[id]=RH-1", "/?filter[synopsis]=adv-1-syn"} {
-		w := CreateRequest("GET", URL, nil, "text/csv", AdvisoriesExportHandler)
+		w := CreateRequest("GET", URL, nil, "text/csv", AdvisoriesExportHandler, c)
 
 		assert.Equal(t, http.StatusOK, w.Code)
 		body := w.Body.String()
@@ -70,7 +70,7 @@ func TestAdvisoriesExportCSVFilter(t *testing.T) {
 func TestAdvisoriesExportTagsInvalid(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithPath("GET", "/", "", "?tags=ns1/k3=val4&tags=invalidTag", nil, "",
-		AdvisoriesExportHandler)
+		AdvisoriesExportHandler, c)
 
 	var errResp utils.ErrorResponse
 	CheckResponse(t, w, http.StatusBadRequest, &errResp)
@@ -80,7 +80,7 @@ func TestAdvisoriesExportTagsInvalid(t *testing.T) {
 func TestAdvisoriesExportIncorrectFilter(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithPath("GET", "/", "", "?filter[filteriamnotexitst]=abcd", nil, "text/csv",
-		AdvisoriesExportHandler)
+		AdvisoriesExportHandler, c)
 
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 }

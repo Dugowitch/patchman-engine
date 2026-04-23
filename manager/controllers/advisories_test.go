@@ -22,7 +22,7 @@ func TestInit(_ *testing.T) {
 
 func testAdvisories(t *testing.T, url string) AdvisoriesResponse {
 	core.SetupTest(t)
-	w := CreateRequest("GET", url, nil, "", AdvisoriesListHandler)
+	w := CreateRequest("GET", url, nil, "", AdvisoriesListHandler, c)
 
 	var output AdvisoriesResponse
 	CheckResponse(t, w, http.StatusOK, &output)
@@ -31,7 +31,7 @@ func testAdvisories(t *testing.T, url string) AdvisoriesResponse {
 
 func testAdvisoriesIDs(t *testing.T, url string) IDsPlainResponse {
 	core.SetupTest(t)
-	w := CreateRequest("GET", url, nil, "", AdvisoriesListIDsHandler)
+	w := CreateRequest("GET", url, nil, "", AdvisoriesListIDsHandler, c)
 
 	var output IDsPlainResponse
 	CheckResponse(t, w, http.StatusOK, &output)
@@ -101,7 +101,7 @@ func TestAdvisoriesOffset(t *testing.T) {
 
 func TestAdvisoriesOffsetOverflow(t *testing.T) {
 	core.SetupTest(t)
-	w := CreateRequest("GET", "/?offset=13&limit=4", nil, "", AdvisoriesListHandler)
+	w := CreateRequest("GET", "/?offset=13&limit=4", nil, "", AdvisoriesListHandler, c)
 
 	var errResp utils.ErrorResponse
 	CheckResponse(t, w, http.StatusBadRequest, &errResp)
@@ -261,7 +261,7 @@ func TestAdvisoriesPossibleSorts(t *testing.T) {
 			continue
 		}
 
-		w := CreateRequest("GET", fmt.Sprintf("/?sort=%v", sort), nil, "", AdvisoriesListHandler)
+		w := CreateRequest("GET", fmt.Sprintf("/?sort=%v", sort), nil, "", AdvisoriesListHandler, c)
 
 		var output AdvisoriesResponse
 		CheckResponse(t, w, http.StatusOK, &output)
@@ -272,7 +272,7 @@ func TestAdvisoriesPossibleSorts(t *testing.T) {
 
 func TestAdvisoriesWrongSort(t *testing.T) {
 	core.SetupTest(t)
-	w := CreateRequest("GET", "/?sort=unknown_key", nil, "", AdvisoriesListHandler)
+	w := CreateRequest("GET", "/?sort=unknown_key", nil, "", AdvisoriesListHandler, c)
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 }
 
@@ -328,7 +328,7 @@ func TestAdvisoriesTags(t *testing.T) {
 func TestListAdvisoriesTagsInvalid(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithPath("GET", "/", "", "?tags=ns1/k3=val4&tags=invalidTag", nil, "",
-		AdvisoriesListHandler)
+		AdvisoriesListHandler, c)
 
 	var errResp utils.ErrorResponse
 	CheckResponse(t, w, http.StatusBadRequest, &errResp)
@@ -350,7 +350,7 @@ func TestAdvisoriesWrongOffset(t *testing.T) {
 func TestAdvisoryTagsInMetadata(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithPath("GET", "/:advisory_id", "RH-1", "?tags=ns1/k3=val4&tags=ns1/k1=val1", nil, "",
-		AdvisoriesListHandler)
+		AdvisoriesListHandler, c)
 
 	var output AdvisoriesResponse
 	CheckResponse(t, w, http.StatusOK, &output)

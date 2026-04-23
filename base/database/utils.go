@@ -48,6 +48,12 @@ func SystemAdvisories(tx *gorm.DB, accountID int, groups map[string]string, join
 	return (joinsT)(joins).apply(tx)
 }
 
+func SystemAdvisories2(tx *gorm.DB, accountID int, workspaceIDs []string, joins ...join) *gorm.DB {
+	tx = Systems2(tx, accountID, workspaceIDs).
+		Joins("JOIN system_advisories sa on sa.system_id = si.id AND sa.rh_account_id = ?", accountID)
+	return (joinsT)(joins).apply(tx)
+}
+
 func SystemPackagesShort(tx *gorm.DB, accountID int, joins ...join) *gorm.DB {
 	tx = tx.Table("system_package2 spkg").
 		Where("spkg.rh_account_id = ?", accountID)
