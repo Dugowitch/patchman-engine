@@ -12,7 +12,7 @@ import (
 func TestSystemAdvisoriesExportJSON(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithPath("GET", "/:inventory_id", "00000000-0000-0000-0000-000000000001", "", nil,
-		"application/json", SystemAdvisoriesExportHandler)
+		"application/json", SystemAdvisoriesExportHandler, c)
 
 	var output []AdvisoriesDBLookup
 	CheckResponse(t, w, http.StatusOK, &output)
@@ -23,7 +23,7 @@ func TestSystemAdvisoriesExportJSON(t *testing.T) {
 func TestSystemAdvisoriesExportCSV(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithPath("GET", "/:inventory_id", "00000000-0000-0000-0000-000000000001", "", nil,
-		"text/csv", SystemAdvisoriesExportHandler)
+		"text/csv", SystemAdvisoriesExportHandler, c)
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	body := w.Body.String()
@@ -39,7 +39,7 @@ func TestSystemAdvisoriesExportCSV(t *testing.T) {
 func TestUnknownSystemAdvisoriesExport(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithPath("GET", "/:inventory_id", "unknownsystem", "", nil, "text/csv",
-		SystemAdvisoriesExportHandler)
+		SystemAdvisoriesExportHandler, c)
 
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 }

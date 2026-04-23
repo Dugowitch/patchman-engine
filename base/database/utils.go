@@ -79,9 +79,9 @@ func PackageByName(tx *gorm.DB, pkgName string, joins ...join) *gorm.DB {
 	return (joinsT)(joins).apply(tx)
 }
 
-func SystemAdvisoriesByInventoryID(tx *gorm.DB, accountID int, groups map[string]string, inventoryID string,
+func SystemAdvisoriesByInventoryID(tx *gorm.DB, accountID int, workspaceIDs []string, inventoryID string,
 	joins ...join) *gorm.DB {
-	tx = SystemAdvisories(tx, accountID, groups).Where("si.inventory_id = ?::uuid", inventoryID)
+	tx = SystemAdvisories2(tx, accountID, workspaceIDs).Where("si.inventory_id = ?::uuid", inventoryID)
 	return (joinsT)(joins).apply(tx)
 }
 
