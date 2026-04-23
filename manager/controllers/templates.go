@@ -124,7 +124,7 @@ func TemplatesListHandler(c *gin.Context) {
 }
 
 func templatesQuery(db *gorm.DB, filters map[string]FilterData, account int, workspaceIDs []string) *gorm.DB {
-	subq := database.Systems2(db, account, workspaceIDs).
+	subq := database.Systems(db, account, workspaceIDs).
 		Select("spatch.template_id, count(*) as systems").
 		Group("spatch.template_id")
 

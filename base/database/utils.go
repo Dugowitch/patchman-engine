@@ -26,15 +26,7 @@ func (j joinsT) apply(tx *gorm.DB) *gorm.DB {
 	return tx
 }
 
-func Systems(tx *gorm.DB, accountID int, groups map[string]string, joins ...join) *gorm.DB {
-	tx = tx.Table("system_inventory si").
-		Joins("JOIN system_patch spatch ON si.id = spatch.system_id AND si.rh_account_id = spatch.rh_account_id").
-		Where("si.rh_account_id = ?", accountID)
-	tx = (joinsT)(joins).apply(tx)
-	return ApplyInventoryWorkspaceFilter(tx, groups)
-}
-
-func Systems2(tx *gorm.DB, accountID int, workspaceIDs []string, joins ...join) *gorm.DB {
+func Systems(tx *gorm.DB, accountID int, workspaceIDs []string, joins ...join) *gorm.DB {
 	tx = tx.Table("system_inventory si").
 		Joins("JOIN system_patch spatch ON si.id = spatch.system_id AND si.rh_account_id = spatch.rh_account_id").
 		Where("si.rh_account_id = ?", accountID)
@@ -43,7 +35,7 @@ func Systems2(tx *gorm.DB, accountID int, workspaceIDs []string, joins ...join) 
 }
 
 func SystemAdvisories(tx *gorm.DB, accountID int, workspaceIDs []string, joins ...join) *gorm.DB {
-	tx = Systems2(tx, accountID, workspaceIDs).
+	tx = Systems(tx, accountID, workspaceIDs).
 		Joins("JOIN system_advisories sa on sa.system_id = si.id AND sa.rh_account_id = ?", accountID)
 	return (joinsT)(joins).apply(tx)
 }
@@ -55,7 +47,7 @@ func SystemPackagesShort(tx *gorm.DB, accountID int, joins ...join) *gorm.DB {
 }
 
 func SystemPackages(tx *gorm.DB, accountID int, workspaceIDs []string, joins ...join) *gorm.DB {
-	tx = Systems2(tx, accountID, workspaceIDs).
+	tx = Systems(tx, accountID, workspaceIDs).
 		Joins("JOIN system_package2 spkg on spkg.system_id = si.id AND spkg.rh_account_id = ?", accountID).
 		Joins("JOIN package p on p.id = spkg.package_id").
 		Joins("JOIN package_name pn on pn.id = spkg.name_id")

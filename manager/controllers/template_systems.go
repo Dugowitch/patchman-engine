@@ -86,7 +86,7 @@ func templateSystemsQuery(c *gin.Context, account int, workspaceIDs []string) (*
 		return nil, nil, err
 	}
 
-	query := database.Systems2(db, account, workspaceIDs).
+	query := database.Systems(db, account, workspaceIDs).
 		Where("spatch.template_id = ?", template.ID).
 		Select(templateSystemSelect)
 

@@ -359,5 +359,5 @@ func SystemsListIDsHandler(c *gin.Context) {
 }
 
 func querySystems(db *gorm.DB, account int, workspaceIDs []string) *gorm.DB {
-	return database.Systems2(db, account, workspaceIDs, database.JoinTemplates).Select(SystemsSelect)
+	return database.Systems(db, account, workspaceIDs, database.JoinTemplates).Select(SystemsSelect)
 }

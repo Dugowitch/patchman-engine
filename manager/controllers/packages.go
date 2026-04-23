@@ -65,7 +65,7 @@ func packagesQuery(db *gorm.DB, filters map[string]FilterData, acc int, workspac
 		return q
 	}
 	middlewares.PackageAccountDataCnt.WithLabelValues("miss").Inc()
-	systemsWithPkgsInstalledQ := database.Systems2(db, acc, workspaceIDs).
+	systemsWithPkgsInstalledQ := database.Systems(db, acc, workspaceIDs).
 		Select("si.id").
 		Where("si.stale = false AND spatch.packages_installed > 0")
 

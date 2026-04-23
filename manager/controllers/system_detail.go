@@ -63,7 +63,7 @@ func SystemDetailHandler(c *gin.Context) {
 
 	var systemDetail SystemDetailLookup
 	db := middlewares.DBFromContext(c)
-	query := database.Systems2(db, account, workspaceIDs, database.JoinTemplates).
+	query := database.Systems(db, account, workspaceIDs, database.JoinTemplates).
 		Select(database.MustGetSelect(&systemDetail)).
 		Where("si.inventory_id = ?::uuid", inventoryID)
 
@@ -173,7 +173,7 @@ func systemJSONsCommon(c *gin.Context, column string) *models.SystemInventory {
 
 	var system models.SystemInventory
 	db := middlewares.DBFromContext(c)
-	query := database.Systems2(db, account, workspaceIDs).
+	query := database.Systems(db, account, workspaceIDs).
 		Select(column).
 		Where("si.inventory_id = ?::uuid", inventoryID)
 
