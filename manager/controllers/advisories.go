@@ -219,7 +219,7 @@ func buildQueryAdvisories(db *gorm.DB, account int) *gorm.DB {
 }
 
 func buildAdvisoryAccountDataQuery(db *gorm.DB, account int, workspaceIDs []string) *gorm.DB {
-	query := database.SystemAdvisories2(db, account, workspaceIDs).
+	query := database.SystemAdvisories(db, account, workspaceIDs).
 		Select(`sa.advisory_id, si.rh_account_id as rh_account_id,
 		        count(si.*) filter (where sa.status_id = 0) as systems_installable,
 		        count(si.*) as systems_applicable`).

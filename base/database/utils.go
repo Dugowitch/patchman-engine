@@ -42,13 +42,7 @@ func Systems2(tx *gorm.DB, accountID int, workspaceIDs []string, joins ...join) 
 	return ApplyInventoryWorkspaceFilter2(tx, workspaceIDs)
 }
 
-func SystemAdvisories(tx *gorm.DB, accountID int, groups map[string]string, joins ...join) *gorm.DB {
-	tx = Systems(tx, accountID, groups).
-		Joins("JOIN system_advisories sa on sa.system_id = si.id AND sa.rh_account_id = ?", accountID)
-	return (joinsT)(joins).apply(tx)
-}
-
-func SystemAdvisories2(tx *gorm.DB, accountID int, workspaceIDs []string, joins ...join) *gorm.DB {
+func SystemAdvisories(tx *gorm.DB, accountID int, workspaceIDs []string, joins ...join) *gorm.DB {
 	tx = Systems2(tx, accountID, workspaceIDs).
 		Joins("JOIN system_advisories sa on sa.system_id = si.id AND sa.rh_account_id = ?", accountID)
 	return (joinsT)(joins).apply(tx)
@@ -81,7 +75,7 @@ func PackageByName(tx *gorm.DB, pkgName string, joins ...join) *gorm.DB {
 
 func SystemAdvisoriesByInventoryID(tx *gorm.DB, accountID int, workspaceIDs []string, inventoryID string,
 	joins ...join) *gorm.DB {
-	tx = SystemAdvisories2(tx, accountID, workspaceIDs).Where("si.inventory_id = ?::uuid", inventoryID)
+	tx = SystemAdvisories(tx, accountID, workspaceIDs).Where("si.inventory_id = ?::uuid", inventoryID)
 	return (joinsT)(joins).apply(tx)
 }
 

@@ -127,7 +127,7 @@ func advisoriesSystemsQuery(c *gin.Context, db *gorm.DB, acc int, workspaceIDs [
 	systems := req.Systems
 	advisories := req.Advisories
 	// get all advisories for all systems in the account
-	advq := database.SystemAdvisories2(db, acc, workspaceIDs, database.JoinAdvisoryMetadata).
+	advq := database.SystemAdvisories(db, acc, workspaceIDs, database.JoinAdvisoryMetadata).
 		Distinct("am.id, am.name")
 		// we need to join system_advisories to make `limit` work properly
 		// without this join it can happen that we display less items on some pages

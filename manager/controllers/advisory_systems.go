@@ -272,7 +272,7 @@ func AdvisorySystemsListIDsHandler(c *gin.Context) {
 
 func buildAdvisorySystemsQuery(db *gorm.DB, account int, workspaceIDs []string, advisoryName string) *gorm.DB {
 	selectQuery := AdvisorySystemsSelect
-	query := database.SystemAdvisories2(db, account, workspaceIDs, database.JoinTemplates, database.JoinAdvisoryMetadata).
+	query := database.SystemAdvisories(db, account, workspaceIDs, database.JoinTemplates, database.JoinAdvisoryMetadata).
 		Select(selectQuery).
 		Joins("LEFT JOIN status st ON sa.status_id = st.id").
 		Where("am.name = ?", advisoryName).
