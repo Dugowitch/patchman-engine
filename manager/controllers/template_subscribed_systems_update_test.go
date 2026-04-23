@@ -49,7 +49,7 @@ func TestUpdateTemplateSubscribedSystems(t *testing.T) {
 	database.CreateTemplate(t, templateAccount, templateUUID, nil)
 
 	w := CreateRequestRouterWithParams("PATCH", "/:template_id/subscribed-systems", templateUUID, "", nil, "",
-		TemplateSubscribedSystemsUpdateHandler, templateAccount,
+		TemplateSubscribedSystemsUpdateHandler, templateAccount, c,
 		core.ContextKV{Key: utils.KeySystem, Value: subscriptionUUID},
 		core.ContextKV{Key: utils.KeyOrgID, Value: orgID})
 
@@ -64,7 +64,7 @@ func TestUpdateTemplateSubscribedSystemsInvalid(t *testing.T) {
 	database.CreateTemplate(t, templateAccount, templateUUID, nil)
 
 	w := CreateRequestRouterWithParams("PATCH", "/:template_id/subscribed-systems", templateUUID, "", nil, "",
-		TemplateSubscribedSystemsUpdateHandler, templateAccount,
+		TemplateSubscribedSystemsUpdateHandler, templateAccount, c,
 		core.ContextKV{Key: utils.KeySystem, Value: subscriptionInvalidUUID})
 
 	assert.Equal(t, http.StatusNotFound, w.Code)

@@ -37,7 +37,7 @@ func TestUpdateTemplateSystems(t *testing.T) {
 		"00000000-0000-0000-0000-000000000007",
 	})
 	w := CreateRequestRouterWithParams("PUT", templatePath, templateUUID, "", bytes.NewBufferString(data), "",
-		TemplateSystemsUpdateHandler, templateAccount)
+		TemplateSystemsUpdateHandler, templateAccount, c)
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	database.CheckTemplateSystems(t, templateAccount, templateUUID, templateSystems)
@@ -56,7 +56,7 @@ func TestUpdateTemplateInvalidVersion(t *testing.T) {
 		"00000000-0000-0000-0000-000000000007",
 	})
 	w := CreateRequestRouterWithParams("PUT", templatePath, templateUUID, "", bytes.NewBufferString(data), "",
-		TemplateSystemsUpdateHandler, templateAccount)
+		TemplateSystemsUpdateHandler, templateAccount, c)
 
 	var errResp utils.ErrorResponse
 	CheckResponse(t, w, http.StatusBadRequest, &errResp)
@@ -79,7 +79,7 @@ func TestUpdateTemplateInvalidSystem(t *testing.T) {
 	}`
 	database.CreateTemplate(t, templateAccount, templateUUID, []string{})
 	w := CreateRequestRouterWithParams("PUT", templatePath, templateUUID, "", bytes.NewBufferString(data), "",
-		TemplateSystemsUpdateHandler, templateAccount)
+		TemplateSystemsUpdateHandler, templateAccount, c)
 
 	var errResp utils.ErrorResponse
 	CheckResponse(t, w, http.StatusNotFound, &errResp)
@@ -102,7 +102,7 @@ func TestUpdateTemplateSystemNotInCandlepin(t *testing.T) {
 	}`
 	database.CreateTemplate(t, templateAccount, templateUUID, []string{})
 	w := CreateRequestRouterWithParams("PUT", templatePath, templateUUID, "", bytes.NewBufferString(data), "",
-		TemplateSystemsUpdateHandler, templateAccount)
+		TemplateSystemsUpdateHandler, templateAccount, c)
 
 	var errResp utils.ErrorResponse
 	CheckResponse(t, w, http.StatusBadRequest, &errResp)
@@ -118,7 +118,7 @@ func TestUpdateTemplateNullValues(t *testing.T) {
 	database.CreateTemplate(t, templateAccount, templateUUID, templateSystems)
 	data := "{}"
 	w := CreateRequestRouterWithParams("PUT", templatePath, templateUUID, "", bytes.NewBufferString(data), "",
-		TemplateSystemsUpdateHandler, templateAccount)
+		TemplateSystemsUpdateHandler, templateAccount, c)
 
 	var resp interface{}
 	CheckResponse(t, w, http.StatusBadRequest, &resp)
@@ -130,7 +130,7 @@ func TestUpdateTemplateNullValues(t *testing.T) {
 func TestUpdateTemplateInvalidTemplateID(t *testing.T) {
 	core.SetupTestEnvironment()
 	w := CreateRequestRouterWithParams("PUT", templatePath, "invalidTemplate", "", bytes.NewBufferString("{}"), "",
-		TemplateSystemsUpdateHandler, templateAccount)
+		TemplateSystemsUpdateHandler, templateAccount, c)
 
 	var errResp utils.ErrorResponse
 	CheckResponse(t, w, http.StatusNotFound, &errResp)
@@ -152,7 +152,7 @@ func TestReassignTemplateSystems2(t *testing.T) {
 		]
 	}`
 	w := CreateRequestRouterWithParams("PUT", templatePath, template2, "", bytes.NewBufferString(data), "",
-		TemplateSystemsUpdateHandler, templateAccount)
+		TemplateSystemsUpdateHandler, templateAccount, c)
 
 	assert.Equal(t, http.StatusOK, w.Code)
 
@@ -202,7 +202,7 @@ func testUpdateTemplateBadRequest(t *testing.T, satelliteManaged, bootc bool) {
 	}`
 
 	w := CreateRequestRouterWithParams("PUT", templatePath, templateUUID, "", bytes.NewBufferString(data), "",
-		TemplateSystemsUpdateHandler, templateAccount)
+		TemplateSystemsUpdateHandler, templateAccount, c)
 	var err utils.ErrorResponse
 	CheckResponse(t, w, http.StatusBadRequest, &err)
 }
@@ -238,7 +238,7 @@ func TestUpdateTemplateSystemsCandlepin404(t *testing.T) {
 	})
 	defer database.DeleteTemplate(t, templateAccount, templateUUID)
 	w := CreateRequestRouterWithParams("PUT", templatePath, templateUUID, "", bytes.NewBufferString(data), "",
-		TemplateSystemsUpdateHandler, templateAccount, core.ContextKV{Key: utils.KeyOrgID, Value: orgID})
+		TemplateSystemsUpdateHandler, templateAccount, c, core.ContextKV{Key: utils.KeyOrgID, Value: orgID})
 
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 	database.CheckTemplateSystems(t, templateAccount, templateUUID, []string{"00000000-0000-0000-0000-000000000007"})
@@ -251,7 +251,7 @@ func TestUpdateTemplateSystemsCandlepin404(t *testing.T) {
 		]
 	}`
 	w = CreateRequestRouterWithParams("PUT", templatePath, templateUUID, "", bytes.NewBufferString(data), "",
-		TemplateSystemsUpdateHandler, templateAccount, core.ContextKV{Key: utils.KeyOrgID, Value: orgID})
+		TemplateSystemsUpdateHandler, templateAccount, c, core.ContextKV{Key: utils.KeyOrgID, Value: orgID})
 
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 	database.CheckTemplateSystems(t, templateAccount, templateUUID,
@@ -278,7 +278,7 @@ func TestUpdateTemplateTooManySystems(t *testing.T) {
 	}
 
 	w := CreateRequestRouterWithParams("PUT", templatePath, templateUUID, "", bytes.NewBuffer(bodyJSON), "",
-		TemplateSystemsUpdateHandler, templateAccount)
+		TemplateSystemsUpdateHandler, templateAccount, c)
 
 	var errResp utils.ErrorResponse
 	CheckResponse(t, w, http.StatusBadRequest, &errResp)

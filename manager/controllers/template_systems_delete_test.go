@@ -22,7 +22,7 @@ func testTemplateSystemsDelete(t *testing.T, body TemplateSystemsUpdateRequest, 
 	}
 
 	w := CreateRequestRouterWithParams("POST", "/systems", "", "", bytes.NewBuffer(bodyJSON), "",
-		TemplateSystemsDeleteHandler, templateAccount)
+		TemplateSystemsDeleteHandler, templateAccount, c)
 
 	assert.Equal(t, status, w.Code)
 	return w
@@ -89,7 +89,7 @@ func TestTemplateSystemsDeleteTooManySystems(t *testing.T) {
 	}
 
 	w := CreateRequestRouterWithParams("PUT", templatePath, templateUUID, "", bytes.NewBuffer(putBodyJSON), "",
-		TemplateSystemsUpdateHandler, templateAccount)
+		TemplateSystemsUpdateHandler, templateAccount, c)
 	assert.Equal(t, http.StatusOK, w.Code)
 
 	systems = append(systems, additionalSystem)
