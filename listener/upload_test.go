@@ -478,6 +478,8 @@ func TestStoreOrUpdateSysPlatform(t *testing.T) {
 	// insert new row
 	hostEvent := createTestUploadEvent("1", id, "puptoo", false, true, "created")
 	hostWorkspaces := inventory.Groups(hostEvent.Host.Groups)
+	workspaceID := &hostEvent.Host.Groups[0].ID
+	workspaceName := &hostEvent.Host.Groups[0].Name
 	inStore := &models.SystemPlatformV2{
 		Inventory: models.SystemInventory{
 			InventoryID:                      "99990000-0000-0000-0000-000000000001",
@@ -488,6 +490,8 @@ func TestStoreOrUpdateSysPlatform(t *testing.T) {
 			Created:                          hostEvent.Host.Created,
 			Tags:                             utils.MarshalNilToJSONB(hostEvent.Host.Tags),
 			Workspaces:                       &hostWorkspaces,
+			WorkspaceID:                      workspaceID,
+			WorkspaceName:                    workspaceName,
 			OSName:                           utils.EmptyToNil(&hostEvent.Host.SystemProfile.OperatingSystem.Name),
 			OSMajor:                          &hostEvent.Host.SystemProfile.OperatingSystem.Major,
 			OSMinor:                          &hostEvent.Host.SystemProfile.OperatingSystem.Minor,
@@ -504,7 +508,7 @@ func TestStoreOrUpdateSysPlatform(t *testing.T) {
 	}
 
 	err := storeOrUpdateSysPlatform(database.DB, inStore, colsToUpdate)
-	assert.Nil(t, err)
+	require.Nil(t, err)
 
 	var outStore models.SystemInventory
 	assert.NoError(t, database.DB.Where("id = ? AND rh_account_id = ?", inStore.Inventory.ID, inStore.Inventory.RhAccountID). // nolint:lll
@@ -532,6 +536,10 @@ func TestStoreOrUpdateSysPlatform(t *testing.T) {
 
 	require.NotNil(t, inventoryAfterInsert.Workspaces)
 	assert.Equal(t, hostEvent.Host.Groups, []inventory.Group(*inventoryAfterInsert.Workspaces))
+	require.NotNil(t, inventoryAfterInsert.WorkspaceID)
+	assert.Equal(t, hostEvent.Host.Groups[0].ID, *inventoryAfterInsert.WorkspaceID)
+	require.NotNil(t, inventoryAfterInsert.WorkspaceName)
+	assert.Equal(t, hostEvent.Host.Groups[0].Name, *inventoryAfterInsert.WorkspaceName)
 
 	assert.Equal(t, hostEvent.Host.SystemProfile.OperatingSystem.Name, *inventoryAfterInsert.OSName)
 	assert.Equal(t, hostEvent.Host.SystemProfile.OperatingSystem.Major, *inventoryAfterInsert.OSMajor)
@@ -570,6 +578,8 @@ func TestStoreOrUpdateSysPlatform(t *testing.T) {
 			Created:                          hostEvent.Host.Created,
 			Tags:                             utils.MarshalNilToJSONB(hostEvent.Host.Tags),
 			Workspaces:                       &hostWorkspaces,
+			WorkspaceID:                      workspaceID,
+			WorkspaceName:                    workspaceName,
 			OSName:                           utils.EmptyToNil(&hostEvent.Host.SystemProfile.OperatingSystem.Name),
 			OSMajor:                          &hostEvent.Host.SystemProfile.OperatingSystem.Major,
 			OSMinor:                          &hostEvent.Host.SystemProfile.OperatingSystem.Minor,

@@ -337,6 +337,8 @@ func updateSystemPlatform(tx *gorm.DB, accountID int, host *Host,
 		"bootc",
 		"tags",
 		"workspaces",
+		"workspace_id",
+		"workspace_name",
 		"os_name",
 		"os_major",
 		"os_minor",
@@ -359,6 +361,21 @@ func updateSystemPlatform(tx *gorm.DB, accountID int, host *Host,
 
 	updatesReqJSONString := string(updatesReqJSON)
 	hostWorkspaces := inventory.Groups(host.Groups)
+	var workspaceID, workspaceName *string
+	if l := len(host.Groups); l >= 1 {
+		if host.Groups[0].ID != "" {
+			workspaceID = &host.Groups[0].ID
+		}
+		if host.Groups[0].Name != "" {
+			workspaceName = &host.Groups[0].Name
+		}
+		if l != 1 {
+			utils.LogWarn(
+				"host_id", host.ID, "org_id", host.OrgID, "workspaces", host.Groups,
+				"received a host with multiple workspaces",
+			)
+		}
+	}
 	systemPlatform := &models.SystemPlatformV2{
 		Inventory: models.SystemInventory{
 			InventoryID:                      inventoryID,
@@ -367,6 +384,8 @@ func updateSystemPlatform(tx *gorm.DB, accountID int, host *Host,
 			Created:                          host.Created,
 			Tags:                             utils.MarshalNilToJSONB(host.Tags),
 			Workspaces:                       &hostWorkspaces,
+			WorkspaceID:                      workspaceID,
+			WorkspaceName:                    workspaceName,
 			VmaasJSON:                        utils.EmptyToNil(&updatesReqJSONString),
 			JSONChecksum:                     utils.EmptyToNil(&jsonChecksum),
 			LastUpload:                       host.GetLastUpload(),
