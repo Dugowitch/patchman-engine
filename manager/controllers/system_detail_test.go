@@ -12,7 +12,7 @@ import (
 func TestSystemDetailDefault1(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithPath("GET", "/:inventory_id", "00000000-0000-0000-0000-000000000001", "", nil, "",
-		SystemDetailHandler)
+		SystemDetailHandler, c)
 
 	var output SystemDetailResponse
 	CheckResponse(t, w, http.StatusOK, &output)
@@ -40,7 +40,7 @@ func TestSystemDetailDefault2(t *testing.T) {
 	core.SetupTest(t)
 	// get system with some installable/updatable packages
 	w := CreateRequestRouterWithAccount("GET", "/:inventory_id", "00000000-0000-0000-0000-000000000012", "", nil, "",
-		SystemDetailHandler, 3)
+		SystemDetailHandler, 3, c)
 
 	var output SystemDetailResponse
 	CheckResponse(t, w, http.StatusOK, &output)
@@ -50,7 +50,7 @@ func TestSystemDetailDefault2(t *testing.T) {
 
 func TestSystemDetailNoIdProvided(t *testing.T) {
 	core.SetupTest(t)
-	w := CreateRequest("GET", "/", nil, "", SystemDetailHandler)
+	w := CreateRequest("GET", "/", nil, "", SystemDetailHandler, c)
 
 	var errResp utils.ErrorResponse
 	CheckResponse(t, w, http.StatusBadRequest, &errResp)
@@ -60,7 +60,7 @@ func TestSystemDetailNoIdProvided(t *testing.T) {
 func TestSystemDetailNotFound(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithPath("GET", "/:inventory_id", "ffffffff-ffff-ffff-ffff-ffffffffffff", "", nil, "",
-		SystemDetailHandler)
+		SystemDetailHandler, c)
 
 	var errResp utils.ErrorResponse
 	CheckResponse(t, w, http.StatusNotFound, &errResp)
@@ -70,7 +70,7 @@ func TestSystemDetailNotFound(t *testing.T) {
 func TestSystemsNoRHSM(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithAccount("GET", "/:inventory_id", "00000000-0000-0000-0000-000000000014", "", nil, "",
-		SystemDetailHandler, 3)
+		SystemDetailHandler, 3, c)
 
 	var output SystemDetailResponse
 	CheckResponse(t, w, http.StatusOK, &output)
@@ -82,7 +82,7 @@ func TestSystemsNoRHSM(t *testing.T) {
 func TestRHSMLessThanOS(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithAccount("GET", "/:inventory_id", "00000000-0000-0000-0000-000000000003", "", nil, "",
-		SystemDetailHandler, 1)
+		SystemDetailHandler, 1, c)
 
 	var output SystemDetailResponse
 	CheckResponse(t, w, http.StatusOK, &output)
@@ -95,7 +95,7 @@ func TestRHSMLessThanOS(t *testing.T) {
 func TestRHSMGreaterThanOS(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithAccount("GET", "/:inventory_id", "00000000-0000-0000-0000-000000000004", "", nil, "",
-		SystemDetailHandler, 1)
+		SystemDetailHandler, 1, c)
 
 	var output SystemDetailResponse
 	CheckResponse(t, w, http.StatusOK, &output)
@@ -114,7 +114,7 @@ func TestSystemUnknown(t *testing.T) {
 func TestSystemDetailFiltering(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithAccount("GET", "/:inventory_id", "00000000-0000-0000-0000-000000000001",
-		"?filter[filter]=abcd", nil, "", SystemDetailHandler, 1)
+		"?filter[filter]=abcd", nil, "", SystemDetailHandler, 1, c)
 
 	var errResp utils.ErrorResponse
 	ParseResponseBody(t, w.Body.Bytes(), &errResp)
