@@ -12,7 +12,7 @@ import (
 
 func TestPackageExportJSON(t *testing.T) {
 	core.SetupTest(t)
-	w := CreateRequestRouterWithParams("GET", "/", "", "", nil, "application/json", PackagesExportHandler, 3)
+	w := CreateRequestRouterWithParams("GET", "/", "", "", nil, "application/json", PackagesExportHandler, 3, c)
 
 	var output []PackageItem
 	CheckResponse(t, w, http.StatusOK, &output)
@@ -30,7 +30,7 @@ func TestPackageExportJSON(t *testing.T) {
 
 func TestPackageExportCSV(t *testing.T) {
 	core.SetupTest(t)
-	w := CreateRequestRouterWithParams("GET", "/", "", "", nil, "text/csv", PackagesExportHandler, 3)
+	w := CreateRequestRouterWithParams("GET", "/", "", "", nil, "text/csv", PackagesExportHandler, 3, c)
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	body := w.Body.String()

@@ -335,16 +335,16 @@ func TestListAdvisoriesTagsInvalid(t *testing.T) {
 	assert.Equal(t, fmt.Sprintf(InvalidTagMsg, "invalidTag"), errResp.Error)
 }
 
-func doTestWrongOffset(t *testing.T, path, param, q string, handler gin.HandlerFunc) {
+func doTestWrongOffset(t *testing.T, path, param, q string, handler gin.HandlerFunc, contextKVs ...core.ContextKV) {
 	core.SetupTest(t)
-	w := CreateRequestRouterWithParams("GET", path, param, q, nil, "", handler, 3)
+	w := CreateRequestRouterWithParams("GET", path, param, q, nil, "", handler, 3, contextKVs...)
 	var errResp utils.ErrorResponse
 	CheckResponse(t, w, http.StatusBadRequest, &errResp)
 	assert.Equal(t, InvalidOffsetMsg, errResp.Error)
 }
 
 func TestAdvisoriesWrongOffset(t *testing.T) {
-	doTestWrongOffset(t, "/", "", "?offset=1000", AdvisoriesListHandler)
+	doTestWrongOffset(t, "/", "", "?offset=1000", AdvisoriesListHandler, c)
 }
 
 func TestAdvisoryTagsInMetadata(t *testing.T) {

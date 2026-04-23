@@ -12,7 +12,7 @@ import (
 
 func doTestPackagesBytes(t *testing.T, q string) (resp []byte, status int) {
 	core.SetupTest(t)
-	w := CreateRequestRouterWithParams("GET", "/", "", q, nil, "", PackagesListHandler, 3)
+	w := CreateRequestRouterWithParams("GET", "/", "", q, nil, "", PackagesListHandler, 3, c)
 
 	return w.Body.Bytes(), w.Code
 }
@@ -75,7 +75,7 @@ func TestSearchPackages(t *testing.T) {
 func TestPackageTagsInvalid(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithParams("GET", "/", "", "?tags=ns1/k3=val4&tags=invalidTag", nil, "",
-		PackagesListHandler, 3)
+		PackagesListHandler, 3, c)
 
 	var errResp utils.ErrorResponse
 	CheckResponse(t, w, http.StatusBadRequest, &errResp)
@@ -89,7 +89,7 @@ func TestPackagesWrongOffset(t *testing.T) {
 func TestPackageTagsInMetadata(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithParams("GET", "/", "", "?tags=ns1/k3=val4&tags=ns1/k1=val1", nil, "",
-		PackagesListHandler, 3)
+		PackagesListHandler, 3, c)
 
 	var output PackagesResponse
 	CheckResponse(t, w, http.StatusOK, &output)
