@@ -11,7 +11,7 @@ import (
 func TestPackageVersions(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithParams("GET", "/:package_name/versions", "firefox", "", nil, "",
-		PackageVersionsListHandler, 3)
+		PackageVersionsListHandler, 3, c)
 
 	var output PackageVersionsResponse
 	assert.Greater(t, len(w.Body.Bytes()), 0)
@@ -23,7 +23,7 @@ func TestPackageVersions(t *testing.T) {
 func TestPackageVersionsInvalidName(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithParams("GET", "/:package_name/versions", "not-existing", "", nil, "",
-		PackageVersionsListHandler, 3)
+		PackageVersionsListHandler, 3, c)
 
 	assert.Equal(t, http.StatusNotFound, w.Code)
 }
