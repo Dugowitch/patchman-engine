@@ -57,7 +57,7 @@ type SystemPackageDBLoad struct {
 }
 
 func systemPackageQuery(db *gorm.DB, account int, workspaceIDs []string, inventoryID string) *gorm.DB {
-	query := database.SystemPackages2(db, account, workspaceIDs, database.JoinInstallableApplicablePackages).
+	query := database.SystemPackages(db, account, workspaceIDs, database.JoinInstallableApplicablePackages).
 		Joins("LEFT JOIN strings AS descr ON p.description_hash = descr.id").
 		Joins("LEFT JOIN strings AS sum ON p.summary_hash = sum.id").
 		Select(SystemPackagesSelect).

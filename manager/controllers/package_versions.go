@@ -46,7 +46,7 @@ func packagesNameID(db *gorm.DB, pkgName string) *gorm.DB {
 }
 
 func packageVersionsQuery(db *gorm.DB, acc int, workspaceIDs []string, packageNameIDs []int) *gorm.DB {
-	query := database.SystemPackages2(db, acc, workspaceIDs).
+	query := database.SystemPackages(db, acc, workspaceIDs).
 		Distinct(PackageVersionSelect).
 		Where("si.stale = false").
 		Where("spkg.name_id in (?)", packageNameIDs)

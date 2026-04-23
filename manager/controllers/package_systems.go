@@ -57,7 +57,7 @@ type PackageSystemsResponse struct {
 
 func packageSystemsQuery(db *gorm.DB, acc int, workspaceIDs []string, packageName string, packageIDs []int,
 ) *gorm.DB {
-	query := database.SystemPackages2(db, acc, workspaceIDs,
+	query := database.SystemPackages(db, acc, workspaceIDs,
 		database.JoinTemplates, database.JoinInstallableApplicablePackages).
 		Select(PackageSystemsSelect).
 		Where("si.stale = false").
