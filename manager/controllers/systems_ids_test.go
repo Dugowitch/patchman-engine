@@ -29,7 +29,7 @@ func TestSystemsIDsOffsetLimit(t *testing.T) {
 }
 
 func TestSystemsIDsWrongOffset(t *testing.T) {
-	doTestWrongOffset(t, "/", "", "?offset=13&limit=4", SystemsListIDsHandler)
+	doTestWrongOffset(t, "/", "", "?offset=13&limit=4", SystemsListIDsHandler, c)
 }
 
 func TestSystemsIDsWrongSort(t *testing.T) {
@@ -192,7 +192,7 @@ func TestSystemsIDsFilterTemplateUUID(t *testing.T) {
 
 func testSystemsIDs(t *testing.T, queryString string, account int) IDsSatelliteManagedResponse {
 	core.SetupTest(t)
-	w := CreateRequestRouterWithAccount("GET", "/", "", queryString, nil, "", SystemsListIDsHandler, account)
+	w := CreateRequestRouterWithAccount("GET", "/", "", queryString, nil, "", SystemsListIDsHandler, account, c)
 
 	var output IDsSatelliteManagedResponse
 	CheckResponse(t, w, http.StatusOK, &output)
@@ -201,7 +201,7 @@ func testSystemsIDs(t *testing.T, queryString string, account int) IDsSatelliteM
 
 func testSystemsIDsError(t *testing.T, queryString string) (int, utils.ErrorResponse) {
 	core.SetupTest(t)
-	w := CreateRequestRouterWithPath("GET", "/", "", queryString, nil, "", SystemsListIDsHandler)
+	w := CreateRequestRouterWithPath("GET", "/", "", queryString, nil, "", SystemsListIDsHandler, c)
 
 	var errResp utils.ErrorResponse
 	ParseResponseBody(t, w.Body.Bytes(), &errResp)

@@ -22,7 +22,7 @@ var SystemCsvHeader = "id,display_name,os,rhsm,tags,last_evaluation," +
 
 func makeRequest(t *testing.T, path string, contentType string) *httptest.ResponseRecorder {
 	core.SetupTest(t)
-	return CreateRequest("GET", path, nil, contentType, SystemsExportHandler)
+	return CreateRequest("GET", path, nil, contentType, SystemsExportHandler, c)
 }
 
 func TestSystemsExportJSON(t *testing.T) {

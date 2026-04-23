@@ -70,7 +70,7 @@ func TestSystemsOffsetLimit(t *testing.T) {
 }
 
 func TestSystemsWrongOffset(t *testing.T) {
-	doTestWrongOffset(t, "/", "", "?offset=13&limit=4", SystemsListHandler)
+	doTestWrongOffset(t, "/", "", "?offset=13&limit=4", SystemsListHandler, c)
 }
 
 func TestSystemsWrongSort(t *testing.T) {
@@ -257,7 +257,7 @@ func TestSystemsFilterTemplateUUID(t *testing.T) {
 
 func testSystems(t *testing.T, queryString string, account int) SystemsResponse {
 	core.SetupTest(t)
-	w := CreateRequestRouterWithAccount("GET", "/", "", queryString, nil, "", SystemsListHandler, account)
+	w := CreateRequestRouterWithAccount("GET", "/", "", queryString, nil, "", SystemsListHandler, account, c)
 
 	var output SystemsResponse
 	CheckResponse(t, w, http.StatusOK, &output)
@@ -266,7 +266,7 @@ func testSystems(t *testing.T, queryString string, account int) SystemsResponse 
 
 func testSystemsError(t *testing.T, queryString string) (int, utils.ErrorResponse) {
 	core.SetupTest(t)
-	w := CreateRequestRouterWithPath("GET", "/", "", queryString, nil, "", SystemsListHandler)
+	w := CreateRequestRouterWithPath("GET", "/", "", queryString, nil, "", SystemsListHandler, c)
 
 	var errResp utils.ErrorResponse
 	ParseResponseBody(t, w.Body.Bytes(), &errResp)
@@ -276,7 +276,7 @@ func testSystemsError(t *testing.T, queryString string) (int, utils.ErrorRespons
 func TestSystemsTagsInMetadata(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithAccount("GET", "/", "", "?tags=ns1/k3=val4&tags=ns1/k1=val1", nil, "",
-		SystemsListHandler, 3)
+		SystemsListHandler, 3, c)
 
 	var output SystemsResponse
 	ParseResponseBody(t, w.Body.Bytes(), &output)
