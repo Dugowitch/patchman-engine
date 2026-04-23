@@ -20,7 +20,7 @@ var TemplateCsvHeader = "id,display_name,os,rhsm," +
 func TestTemplateSystemsExportJSON(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithPath("GET", "/:template_id/systems", "99900000-0000-0000-0000-000000000001", "",
-		nil, "application/json", TemplateSystemsExportHandler)
+		nil, "application/json", TemplateSystemsExportHandler, c)
 
 	var output []TemplateSystemsDBLookup
 	CheckResponse(t, w, http.StatusOK, &output)
@@ -56,7 +56,7 @@ func TestTemplateSystemsExportJSON(t *testing.T) {
 func TestTemplateSystemsExportCSV(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithPath("GET", "/:template_id/systems", "99900000-0000-0000-0000-000000000001", "",
-		nil, "text/csv", TemplateSystemsExportHandler)
+		nil, "text/csv", TemplateSystemsExportHandler, c)
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	body := w.Body.String()
@@ -80,7 +80,7 @@ func TestTemplateSystemsExportCSV(t *testing.T) {
 func TestTemplateSystemsExportWrongFormat(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithPath("GET", "/:template_id/systems", "99900000-0000-0000-0000-000000000001", "",
-		nil, "test-format", TemplateSystemsExportHandler)
+		nil, "test-format", TemplateSystemsExportHandler, c)
 
 	assert.Equal(t, http.StatusUnsupportedMediaType, w.Code)
 	body := w.Body.String()
@@ -90,7 +90,7 @@ func TestTemplateSystemsExportWrongFormat(t *testing.T) {
 func TestTemplateSystemsExportCSVFilter(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithPath("GET", "/:template_id/systems", "99900000-0000-0000-0000-000000000001",
-		"?filter[display_name]=nonexistent", nil, "text/csv", TemplateSystemsExportHandler)
+		"?filter[display_name]=nonexistent", nil, "text/csv", TemplateSystemsExportHandler, c)
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	body := w.Body.String()
@@ -103,7 +103,7 @@ func TestTemplateSystemsExportCSVFilter(t *testing.T) {
 func TestExportTemplateSystemsTags(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithPath("GET", "/:template_id/systems", "99900000-0000-0000-0000-000000000001",
-		"?tags=ns1/k2=val2", nil, "application/json", TemplateSystemsExportHandler)
+		"?tags=ns1/k2=val2", nil, "application/json", TemplateSystemsExportHandler, c)
 
 	var output []TemplateSystemsDBLookup
 	CheckResponse(t, w, http.StatusOK, &output)
@@ -115,7 +115,7 @@ func TestExportTemplateSystemsTags(t *testing.T) {
 func TestExportTemplateSystemsTagsInvalid(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithPath("GET", "/:template_id/systems", "99900000-0000-0000-0000-000000000001",
-		"?tags=ns1/k3=val4&tags=invalidTag", nil, "application/json", TemplateSystemsExportHandler)
+		"?tags=ns1/k3=val4&tags=invalidTag", nil, "application/json", TemplateSystemsExportHandler, c)
 
 	var errResp utils.ErrorResponse
 	CheckResponse(t, w, http.StatusBadRequest, &errResp)
@@ -126,7 +126,7 @@ func TestTemplateSystemsExportWorkloads(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithPath("GET", "/:template_id/systems", "99900000-0000-0000-0000-000000000001",
 		"?filter[system_profile][sap_system]=true&filter[system_profile][sap_sids]=ABC", nil, "application/json",
-		TemplateSystemsExportHandler)
+		TemplateSystemsExportHandler, c)
 
 	var output []TemplateSystemsDBLookup
 	CheckResponse(t, w, http.StatusOK, &output)

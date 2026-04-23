@@ -12,7 +12,7 @@ import (
 func testTemplateSystems(t *testing.T, param, queryString string) TemplateSystemsResponse {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithPath("GET", "/:template_id/systems", param, queryString, nil, "",
-		TemplateSystemsListHandler)
+		TemplateSystemsListHandler, c)
 
 	var output TemplateSystemsResponse
 	CheckResponse(t, w, http.StatusOK, &output)
@@ -78,7 +78,7 @@ func TestTemplateSystemsUnlimited(t *testing.T) {
 func TestTemplateSystemOffsetOverflow(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithPath("GET", "/:template_id/systems", "99900000-0000-0000-0000-000000000001",
-		"?offset=10&limit=4", nil, "", TemplateSystemsListHandler)
+		"?offset=10&limit=4", nil, "", TemplateSystemsListHandler, c)
 
 	var errResp utils.ErrorResponse
 	CheckResponse(t, w, http.StatusBadRequest, &errResp)
@@ -101,7 +101,7 @@ func TestTemplatesFilterTag(t *testing.T) {
 func TestTemplateSystemsWrongSort(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithPath("GET", "/:template_id/systems", "99900000-0000-0000-0000-000000000001",
-		"?sort=unknown_key", nil, "", TemplateSystemsListHandler)
+		"?sort=unknown_key", nil, "", TemplateSystemsListHandler, c)
 
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 }
@@ -131,7 +131,7 @@ func TestTemplateSystemsSearch(t *testing.T) {
 func TestTemplateSystemsInvalidUUID(t *testing.T) {
 	core.SetupTest(t)
 	w := CreateRequestRouterWithPath("GET", "/:template_id/systems", "InvalidTemplateUUID",
-		"?sort=unknown_key", nil, "", TemplateSystemsListHandler)
+		"?sort=unknown_key", nil, "", TemplateSystemsListHandler, c)
 
 	assert.Equal(t, http.StatusNotFound, w.Code)
 	assert.Equal(t, `{"error":"Invalid template uuid: InvalidTemplateUUID"}`, w.Body.String())
