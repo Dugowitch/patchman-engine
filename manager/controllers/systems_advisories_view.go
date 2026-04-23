@@ -122,12 +122,12 @@ func systemsAdvisoriesQuery(c *gin.Context, db *gorm.DB, acc int, workspaceIDs [
 	return query, meta, links, err
 }
 
-func advisoriesSystemsQuery(c *gin.Context, db *gorm.DB, acc int, groups map[string]string,
+func advisoriesSystemsQuery(c *gin.Context, db *gorm.DB, acc int, workspaceIDs []string,
 	req SystemsAdvisoriesRequest) (*gorm.DB, *ListMeta, *Links, error) {
 	systems := req.Systems
 	advisories := req.Advisories
 	// get all advisories for all systems in the account
-	advq := database.SystemAdvisories(db, acc, groups, database.JoinAdvisoryMetadata).
+	advq := database.SystemAdvisories2(db, acc, workspaceIDs, database.JoinAdvisoryMetadata).
 		Distinct("am.id, am.name")
 		// we need to join system_advisories to make `limit` work properly
 		// without this join it can happen that we display less items on some pages
@@ -180,7 +180,6 @@ func queryDB(c *gin.Context, endpoint string) ([]systemsAdvisoriesDBLoad, *ListM
 		return nil, nil, nil, err
 	}
 	acc := c.GetInt(utils.KeyAccount)
-	groups := c.GetStringMapString(utils.KeyInventoryGroups)
 	workspaceIDs := c.GetStringSlice(utils.KeyInventoryWorkspaces)
 	db := middlewares.DBFromContext(c)
 	// backward compatibility, put limit/offset from json into querystring
@@ -194,7 +193,7 @@ func queryDB(c *gin.Context, endpoint string) ([]systemsAdvisoriesDBLoad, *ListM
 	case "SystemsAdvisories":
 		q, meta, links, err = systemsAdvisoriesQuery(c, db, acc, workspaceIDs, req)
 	case "AdvisoriesSystems":
-		q, meta, links, err = advisoriesSystemsQuery(c, db, acc, groups, req)
+		q, meta, links, err = advisoriesSystemsQuery(c, db, acc, workspaceIDs, req)
 	default:
 		return nil, nil, nil, fmt.Errorf("unknown endpoint '%s'", endpoint)
 	}

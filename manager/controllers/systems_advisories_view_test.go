@@ -46,7 +46,7 @@ func TestSystemsAdvisoriesView(t *testing.T) {
 }
 
 func TestAdvisoriesSystemsView(t *testing.T) {
-	w := doTestView(t, PostAdvisoriesSystems, "", nil, nil)
+	w := doTestView(t, PostAdvisoriesSystems, "", nil, nil, c)
 	var output AdvisoriesSystemsResponse
 	CheckResponse(t, w, http.StatusOK, &output)
 	assert.Equal(t, output.Data["RH-1"][0], SystemID("00000000-0000-0000-0000-000000000001"))
@@ -62,7 +62,7 @@ func TestSystemsAdvisoriesViewTags(t *testing.T) {
 }
 
 func TestAdvisoriesSystemsViewTags(t *testing.T) {
-	w := doTestView(t, PostAdvisoriesSystems, "?filter[system_profile][sap_sids]=DEF", nil, nil)
+	w := doTestView(t, PostAdvisoriesSystems, "?filter[system_profile][sap_sids]=DEF", nil, nil, c)
 	var output AdvisoriesSystemsResponse
 	CheckResponse(t, w, http.StatusOK, &output)
 	assert.Equal(t, output.Data["RH-1"][0], SystemID("00000000-0000-0000-0000-000000000001"))
@@ -101,7 +101,7 @@ func TestSystemAdvisoriesViewWrongOffset(t *testing.T) {
 func TestAvisorySystemsViewOffsetLimit(t *testing.T) {
 	limit := 3
 	offset := 0
-	w := doTestView(t, PostAdvisoriesSystems, "", &limit, &offset)
+	w := doTestView(t, PostAdvisoriesSystems, "", &limit, &offset, c)
 	var output AdvisoriesSystemsResponse
 	CheckResponse(t, w, http.StatusOK, &output)
 	assert.Equal(t, 2, len(output.Data))
@@ -114,7 +114,7 @@ func TestAvisorySystemsViewOffsetLimit(t *testing.T) {
 func TestAvisorySystemsViewOffsetOverflow(t *testing.T) {
 	limit := 1
 	offset := 100
-	w := doTestView(t, PostAdvisoriesSystems, "", &limit, &offset)
+	w := doTestView(t, PostAdvisoriesSystems, "", &limit, &offset, c)
 	var errResp utils.ErrorResponse
 	CheckResponse(t, w, http.StatusBadRequest, &errResp)
 	assert.Equal(t, InvalidOffsetMsg, errResp.Error)
@@ -122,7 +122,7 @@ func TestAvisorySystemsViewOffsetOverflow(t *testing.T) {
 
 func TestAvisorySystemsViewWrongOffset(t *testing.T) {
 	offset := 1000
-	w := doTestView(t, PostAdvisoriesSystems, "", nil, &offset)
+	w := doTestView(t, PostAdvisoriesSystems, "", nil, &offset, c)
 	var errResp utils.ErrorResponse
 	CheckResponse(t, w, http.StatusBadRequest, &errResp)
 	assert.Equal(t, InvalidOffsetMsg, errResp.Error)
