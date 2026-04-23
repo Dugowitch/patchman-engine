@@ -31,7 +31,7 @@ func Systems(tx *gorm.DB, accountID int, workspaceIDs []string, joins ...join) *
 		Joins("JOIN system_patch spatch ON si.id = spatch.system_id AND si.rh_account_id = spatch.rh_account_id").
 		Where("si.rh_account_id = ?", accountID)
 	tx = (joinsT)(joins).apply(tx)
-	return ApplyInventoryWorkspaceFilter2(tx, workspaceIDs)
+	return ApplyInventoryWorkspaceFilter(tx, workspaceIDs)
 }
 
 func SystemAdvisories(tx *gorm.DB, accountID int, workspaceIDs []string, joins ...join) *gorm.DB {
@@ -240,28 +240,11 @@ func ReadReplicaConfigured() bool {
 	return len(utils.CoreCfg.DBReadReplicaHost) > 0 && utils.CoreCfg.DBReadReplicaPort != 0
 }
 
-func ApplyInventoryWorkspaceFilter2(tx *gorm.DB, workspaceIDs []string) *gorm.DB {
+func ApplyInventoryWorkspaceFilter(tx *gorm.DB, workspaceIDs []string) *gorm.DB {
 	if len(workspaceIDs) == 0 {
 		utils.LogWarn("there should always be some workspaces, at least root workspace")
 	}
 	return tx.Where("si.workspace_id IN (?)", workspaceIDs)
-}
-
-func ApplyInventoryWorkspaceFilter(tx *gorm.DB, groups map[string]string) *gorm.DB {
-	if _, ok := groups[utils.KeyGrouped]; !ok {
-		if _, ok := groups[utils.KeyUngrouped]; ok {
-			// show only systems with '[]' group
-			return tx.Where("si.workspaces = '[]'")
-		}
-		// return query without WHERE if there are no groups
-		return tx
-	}
-
-	db := DB.Where("si.workspaces @> ANY (?::jsonb[])", groups[utils.KeyGrouped])
-	if _, ok := groups[utils.KeyUngrouped]; ok {
-		db = db.Or("si.workspaces = '[]'")
-	}
-	return tx.Where(db)
 }
 
 // LEFT JOIN templates to spatch (system_patch)

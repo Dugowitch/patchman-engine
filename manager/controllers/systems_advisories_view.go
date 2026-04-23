@@ -76,7 +76,7 @@ func systemsAdvisoriesQuery(c *gin.Context, db *gorm.DB, acc int, workspaceIDs [
 	req SystemsAdvisoriesRequest) (*gorm.DB, *ListMeta, *Links, error) {
 	systems := req.Systems
 	advisories := req.Advisories
-	sysq := database.ApplyInventoryWorkspaceFilter2(
+	sysq := database.ApplyInventoryWorkspaceFilter(
 		db.Table("system_inventory si").
 			Where("si.rh_account_id = ?", acc),
 		workspaceIDs).
