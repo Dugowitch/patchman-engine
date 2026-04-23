@@ -12,7 +12,7 @@ import (
 
 func testTemplates(t *testing.T, url string) TemplatesResponse {
 	core.SetupTest(t)
-	w := CreateRequest("GET", url, nil, "", TemplatesListHandler)
+	w := CreateRequest("GET", url, nil, "", TemplatesListHandler, c)
 
 	var output TemplatesResponse
 	CheckResponse(t, w, http.StatusOK, &output)
@@ -21,7 +21,7 @@ func testTemplates(t *testing.T, url string) TemplatesResponse {
 
 func testTemplatesError(t *testing.T, url string, expectedStatus int) utils.ErrorResponse {
 	core.SetupTest(t)
-	w := CreateRequest("GET", url, nil, "", TemplatesListHandler)
+	w := CreateRequest("GET", url, nil, "", TemplatesListHandler, c)
 
 	var output utils.ErrorResponse
 	CheckResponse(t, w, expectedStatus, &output)
@@ -64,7 +64,7 @@ func TestTemplatesOffsetLimit(t *testing.T) {
 
 func TestTemplatesOffsetOverflow(t *testing.T) {
 	core.SetupTest(t)
-	w := CreateRequest("GET", "/?offset=10&limit=4", nil, "", TemplatesListHandler)
+	w := CreateRequest("GET", "/?offset=10&limit=4", nil, "", TemplatesListHandler, c)
 
 	var errResp utils.ErrorResponse
 	CheckResponse(t, w, http.StatusBadRequest, &errResp)
@@ -115,7 +115,7 @@ func TestTemplatesSort(t *testing.T) {
 
 func TestTemplatesWrongSort(t *testing.T) {
 	core.SetupTest(t)
-	w := CreateRequest("GET", "/?sort=unknown_key", nil, "", TemplatesListHandler)
+	w := CreateRequest("GET", "/?sort=unknown_key", nil, "", TemplatesListHandler, c)
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 }
 
