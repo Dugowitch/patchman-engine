@@ -94,7 +94,6 @@ type SystemItemAttributes struct {
 	ApplicableOtherCount  int `json:"applicable_other_count" csv:"applicable_other_count" query:"(spatch.applicable_advisory_count_cache - spatch.installable_advisory_sec_count_cache - spatch.installable_advisory_bug_count_cache - spatch.installable_advisory_enh_count_cache)" gorm:"column:applicable_other_count"`
 	BaselineIDAttr
 	TemplateAttibutes
-	SystemGroups
 	SystemWorkspace
 	SystemArch
 }
@@ -112,10 +111,9 @@ type SystemItemAttributesExtended struct {
 }
 
 type SystemTagsList []SystemTag
-type SystemGroupsList []SystemGroup
 
 type SystemJSONBItemType interface {
-	SystemTagsList | SystemGroupsList
+	SystemTagsList
 }
 
 func (v SystemTagsList) String() string {
@@ -127,18 +125,6 @@ func (v SystemTagsList) Value() (driver.Value, error) {
 }
 
 func (v *SystemTagsList) Scan(value interface{}) error {
-	return SystemJSONBItemScan(v, value)
-}
-
-func (v SystemGroupsList) String() string {
-	return SystemJSONBItemString(v)
-}
-
-func (v SystemGroupsList) Value() (driver.Value, error) {
-	return SystemJSONBItemValue(v)
-}
-
-func (v *SystemGroupsList) Scan(value interface{}) error {
 	return SystemJSONBItemScan(v, value)
 }
 

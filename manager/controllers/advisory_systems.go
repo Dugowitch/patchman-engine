@@ -40,7 +40,6 @@ type AdvisorySystemItemAttributes struct {
 	OSAttributes
 	SystemTimestamps
 	SystemTags
-	SystemGroups
 	SystemWorkspace
 	BaselineIDAttr
 	BaselineNameAttr

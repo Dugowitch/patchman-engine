@@ -69,8 +69,3 @@ type IDsSatelliteManagedResponse struct {
 	// TODO: delete later once UI is using only the new `data` field
 	IDsResponseCommon
 }
-
-type SystemGroup struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-}
