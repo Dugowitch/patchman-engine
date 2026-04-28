@@ -336,7 +336,6 @@ func updateSystemPlatform(tx *gorm.DB, accountID int, host *Host,
 		"arch",
 		"bootc",
 		"tags",
-		"workspaces",
 		"workspace_id",
 		"workspace_name",
 		"os_name",
@@ -360,7 +359,6 @@ func updateSystemPlatform(tx *gorm.DB, accountID int, host *Host,
 	isBootc := len(host.SystemProfile.BootcStatus.Booted.Image) > 0
 
 	updatesReqJSONString := string(updatesReqJSON)
-	hostWorkspaces := inventory.Groups(host.Groups)
 	var workspaceID, workspaceName *string
 	if l := len(host.Groups); l >= 1 {
 		if host.Groups[0].ID != "" {
@@ -383,7 +381,6 @@ func updateSystemPlatform(tx *gorm.DB, accountID int, host *Host,
 			DisplayName:                      displayName,
 			Created:                          host.Created,
 			Tags:                             utils.MarshalNilToJSONB(host.Tags),
-			Workspaces:                       &hostWorkspaces,
 			WorkspaceID:                      workspaceID,
 			WorkspaceName:                    workspaceName,
 			VmaasJSON:                        utils.EmptyToNil(&updatesReqJSONString),

@@ -94,8 +94,6 @@ func assertSystemInventoryProfileMatchesHost(t *testing.T, inventoryID string, h
 
 	assert.JSONEq(t, string(utils.MarshalNilToJSONB(host.Tags)), string(inv.Tags))
 
-	require.NotNil(t, inv.Workspaces)
-	assert.Equal(t, host.Groups, []inventory.Group(*inv.Workspaces))
 	if hostWorkspaceID := host.Groups[0].ID; hostWorkspaceID != "" {
 		require.NotNil(t, inv.WorkspaceID)
 		assert.Equal(t, hostWorkspaceID, *inv.WorkspaceID)
