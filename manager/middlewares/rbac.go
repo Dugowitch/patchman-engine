@@ -6,7 +6,6 @@ import (
 	"app/base/rbac"
 	"app/base/utils"
 	"app/manager/config"
-	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -125,13 +124,6 @@ func isAccessGranted(c *gin.Context) bool {
 	if !granted {
 		return granted
 	}
-	// collect inventory groups
-	groups, err := findInventoryGroups(&access)
-	if err != nil {
-		utils.LogError("err", err.Error(), "RBAC")
-		granted = false
-	}
-	c.Set(utils.KeyInventoryGroups, groups)
 
 	workspaceIDs := make([]string, 0)
 	for _, a := range access.Data {
@@ -148,60 +140,6 @@ func isAccessGranted(c *gin.Context) bool {
 	c.Set(utils.KeyInventoryWorkspaces, workspaceIDs)
 
 	return granted
-}
-
-func findInventoryGroups(access *rbac.AccessPagination) (map[string]string, error) {
-	res := make(map[string]string)
-
-	if len(access.Data) == 0 {
-		utils.LogDebug("rbac zero access data")
-		return res, nil
-	}
-	inventoryHostsReadPerms := expandedPermission(inventoryHostsReadPerm)
-	groups := []string{}
-	for _, a := range access.Data {
-		// look for groups only on inventory:hosts:read permissions
-		if !slices.Contains(inventoryHostsReadPerms, a.Permission) {
-			continue
-		}
-
-		if len(a.ResourceDefinitions) == 0 {
-			// access to all groups
-			utils.LogDebug("rbac access to all groups")
-			return nil, nil
-		}
-		for _, rd := range a.ResourceDefinitions {
-			if rd.AttributeFilter.Key != "group.id" {
-				continue
-			}
-
-			if rd.AttributeFilter.Operation != "in" && rd.AttributeFilter.Operation != "equal" {
-				err := fmt.Errorf(
-					"invalid value '%s' for attributeFilter.Operation",
-					rd.AttributeFilter.Operation,
-				)
-				return nil, err
-			}
-			for _, v := range rd.AttributeFilter.Value {
-				if v == nil {
-					res[utils.KeyUngrouped] = "[]"
-					continue
-				}
-				group, err := utils.ParseInventoryGroup(v, nil)
-				if err != nil {
-					// couldn't marshal inventory group to json
-					continue
-				}
-				groups = append(groups, group)
-			}
-		}
-	}
-
-	if len(groups) > 0 {
-		res[utils.KeyGrouped] = fmt.Sprintf("{%s}", strings.Join(groups, ","))
-	}
-	utils.LogDebug("group_count", len(groups), "processed groups")
-	return res, nil
 }
 
 func RBAC() gin.HandlerFunc {
